@@ -6,7 +6,7 @@ namespace NodeCanvas.Tasks.Conditions {
 
 	public class TightropeFallCT : ConditionTask {
 
-		Variable<float> stabilityVar;
+		Variable<float> balanceVar;
 
 		Blackboard agentBlackboard;
 
@@ -17,9 +17,9 @@ namespace NodeCanvas.Tasks.Conditions {
 			if (!agentBlackboard)
 				return $"{agent.name} does not have a Blackboard attached!";
 
-			stabilityVar = blackboard.GetVariable<float>("stability");
-			if (stabilityVar == null)
-				return $"No float 'stability' was found on entity {agent.name}";
+            balanceVar = blackboard.GetVariable<float>("balance");
+			if (balanceVar == null)
+				return $"No float 'balance' was found on entity {agent.name}";
 
 			return null;
 		}
@@ -37,7 +37,7 @@ namespace NodeCanvas.Tasks.Conditions {
 		//Called once per frame while the condition is active.
 		//Return whether the condition is success or failure.
 		protected override bool OnCheck() {
-			return stabilityVar.value > 1 || stabilityVar.value < -1;
+			return balanceVar.value > 1 || balanceVar.value < -1;
 		}
 	}
 }

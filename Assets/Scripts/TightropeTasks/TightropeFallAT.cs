@@ -4,12 +4,20 @@ using ParadoxNotion.Design;
 
 namespace NodeCanvas.Tasks.Actions {
 
-	public class TightropeFallAT : ActionTask {
+	public class TightropeFallAT : ActionTask
+    {
 
-		//Use for initialization. This is called only once in the lifetime of the task.
-		//Return null if init was successfull. Return an error string otherwise
-		protected override string OnInit() {
-			return null;
+        Blackboard agentBlackboard;
+
+        //Use for initialization. This is called only once in the lifetime of the task.
+        //Return null if init was successfull. Return an error string otherwise
+        protected override string OnInit()
+        {
+            agentBlackboard = agent.GetComponent<Blackboard>();
+            if (!agentBlackboard)
+                return $"{agent.name} does not have a Blackboard attached!";
+
+            return null;
 		}
 
 		//This is called once each time the task is enabled.
