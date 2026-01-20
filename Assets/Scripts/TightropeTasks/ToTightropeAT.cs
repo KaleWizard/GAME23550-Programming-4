@@ -27,19 +27,20 @@ namespace NodeCanvas.Tasks.Actions {
             if (!agentBlackboard)
                 return $"{agent.name} does not have a Blackboard attached!";
 
-			Transform ropeStartTransform = agentBlackboard.GetVariableValue<Transform>("ropeStart");
-			ropeStart = ropeStartTransform.position;
-
-			velocity = (ropeStart - agent.transform.position).normalized * walkSpeed.value;
-
             return null;
 		}
 
 		//This is called once each time the task is enabled.
 		//Call EndAction() to mark the action as finished, either in success or failure.
 		//EndAction can be called from anywhere.
-		protected override void OnExecute() {
-			turned = false;
+		protected override void OnExecute()
+        {
+            Transform ropeStartTransform = agentBlackboard.GetVariableValue<Transform>("ropeStart");
+            ropeStart = ropeStartTransform.position;
+
+            velocity = (ropeStart - agent.transform.position).normalized * walkSpeed.value;
+
+            turned = false;
 		}
 
 		//Called once per frame while the action is active.

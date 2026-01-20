@@ -38,20 +38,21 @@ namespace NodeCanvas.Tasks.Actions {
             if (balanceVar == null)
                 return $"No AnimationCurve 'instabilityCurve' was found on entity {agent.name}";
 
-            Transform ropeStart = agentBlackboard.GetVariableValue<Transform>("ropeStart");
-            Transform ropeEnd = agentBlackboard.GetVariableValue<Transform>("ropeEnd");
-
-			direction = (ropeEnd.position - ropeStart.position).normalized;
-
             return null;
 		}
 
 		//This is called once each time the task is enabled.
 		//Call EndAction() to mark the action as finished, either in success or failure.
 		//EndAction can be called from anywhere.
-		protected override void OnExecute() {
-			
-		}
+		protected override void OnExecute()
+        {
+            Transform ropeStart = agentBlackboard.GetVariableValue<Transform>("ropeStart");
+            Transform ropeEnd = agentBlackboard.GetVariableValue<Transform>("ropeEnd");
+
+            direction = (ropeEnd.position - ropeStart.position).normalized;
+
+			balanceVar.value = Random.Range(0f, 1f) > 0.5f ? 0.01f : -0.01f;
+        }
 
 		//Called once per frame while the action is active.
 		protected override void OnUpdate() {
@@ -74,14 +75,15 @@ namespace NodeCanvas.Tasks.Actions {
 			float deltaBalance = instabilityCurve.value.Evaluate(balanceVar.value);
 			// Increase by current movement input amount
 			deltaBalance *= 1 + (Mathf.Abs(Input.GetAxis("Vertical")) * walkInstability.value + 1) / (walkInstability.value + 1);
-			// Apply horizontal mouse input
-			deltaBalance += Input.mousePositionDelta.x * mouseBalanceForce.value;
             // Map to maximum change in instability
             deltaBalance *= maxInstabilityChange.value;
 			// Ensure deltaBalance is smooth across framerates
 			deltaBalance *= Time.deltaTime;
 			// Finally update balance value
-			balanceVar.value += deltaBalance;
+			balanceVar.value += Mathf.Sign(balanceVar.value) * deltaBalance;
+
+            // Apply horizontal mouse input
+            balanceVar.value -= Input.mousePositionDelta.x * mouseBalanceForce.value * Time.deltaTime;
 
             agent.transform.eulerAngles = Vector3.forward * maxRotation.value * balanceVar.value;
         }

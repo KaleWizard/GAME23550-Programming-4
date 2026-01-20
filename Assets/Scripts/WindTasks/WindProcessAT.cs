@@ -2,16 +2,18 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
 
+
 namespace NodeCanvas.Tasks.Actions {
 
-	public class TightropeVictoryAT : ActionTask
+	public class WindProcessAT : ActionTask
     {
-		public BBParameter<float> walkSpeed;
+        public BBParameter<float> amplitude;
+        public BBParameter<float> frequency;
+
 
         Blackboard agentBlackboard;
 
-        Vector3 victoryPosition;
-		Vector3 velocity;
+        Variable<float> speedVar;
 
         //Use for initialization. This is called only once in the lifetime of the task.
         //Return null if init was successfull. Return an error string otherwise
@@ -21,37 +23,25 @@ namespace NodeCanvas.Tasks.Actions {
             if (!agentBlackboard)
                 return $"{agent.name} does not have a Blackboard attached!";
 
+            speedVar = agentBlackboard.GetVariable<float>("speed");
+            if (speedVar == null)
+                return $"No float 'speed' was found on entity {agent.name}";
             
-
-            return null;
+			return null;
 		}
 
 		//This is called once each time the task is enabled.
 		//Call EndAction() to mark the action as finished, either in success or failure.
 		//EndAction can be called from anywhere.
 		protected override void OnExecute() {
-            Transform victoryPositionTransform = agentBlackboard.GetVariableValue<Transform>("playerEndVictory");
-            victoryPosition = victoryPositionTransform.position;
-
-            velocity = (victoryPosition - agent.transform.position).normalized * walkSpeed.value;
-
-            // Reset player rotation
-            agent.transform.eulerAngles = Vector3.zero;
-        }
+			
+		}
 
 		//Called once per frame while the action is active.
-		protected override void OnUpdate()
-        {
-            agent.transform.position += velocity * Time.deltaTime;
-
-            bool arrived = Vector3.Dot(velocity, victoryPosition - agent.transform.position) < 0;
-
-            if (arrived)
-            {
-                agent.transform.position = victoryPosition;
-                EndAction(true);
-            }
-        }
+		protected override void OnUpdate() {
+			float noise = (Mathf.PerlinNoise1D(frequency.value * Time.time) - 1) * 2;
+            speedVar.value = amplitude.value * noise * noise;
+		}
 
 		//Called when the task is disabled.
 		protected override void OnStop() {
