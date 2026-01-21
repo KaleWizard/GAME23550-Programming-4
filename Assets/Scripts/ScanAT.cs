@@ -61,7 +61,7 @@ namespace NodeCanvas.Tasks.Actions {
 				if (colliders[i] == null) continue;
                 Blackboard currentBlackboard = colliders[i].GetComponentInParent<Blackboard>();
                 float repairValue = currentBlackboard.GetVariableValue<float>("repairValue");
-				if (repairValue > 15) continue;
+				if (repairValue > 5) continue;
 
                 Vector3 displacement = colliders[i].transform.position - agent.transform.position;
 				float distance = displacement.magnitude;
@@ -75,8 +75,11 @@ namespace NodeCanvas.Tasks.Actions {
             if (target != null)
 			{
                 lightTowerTargetBBP.value = targetBlackboard.GetVariableValue<Transform>("workpad");
+            } else
+			{
+				lightTowerTargetBBP.value = null;
             }
-			EndAction(true);
+				EndAction(true);
         }
 
 		private void DrawCircle(Vector3 center, float radius, Color colour, int numberOfPoints, float duration)
