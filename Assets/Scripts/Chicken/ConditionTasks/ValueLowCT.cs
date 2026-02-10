@@ -8,7 +8,7 @@ namespace NodeCanvas.Tasks.Conditions {
 
 		ChickenProperties chicken;
 
-		BBParameter<ChickenProperties.HealhProperties> type;
+		public BBParameter<ChickenProperties.HealhProperties> type;
 
 		protected override string OnInit(){
 			chicken = agent.GetComponent<ChickenProperties>();
