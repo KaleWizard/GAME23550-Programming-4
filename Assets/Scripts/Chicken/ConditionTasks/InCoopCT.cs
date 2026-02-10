@@ -1,39 +1,39 @@
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
+using UnityEngine;
+using UnityEngine.AI;
 
 
 namespace NodeCanvas.Tasks.Conditions {
 
 	public class InCoopCT : ConditionTask
     {
-
         ChickenProperties chicken;
 
-        //Use for initialization. This is called only once in the lifetime of the task.
-        //Return null if init was successfull. Return an error string otherwise
+        int coopWalkable;
+        int coopNonWalkable;
+
         protected override string OnInit()
         {
             chicken = agent.GetComponent<ChickenProperties>();
             if (!chicken)
                 return $"Agent {agent.name} does not have a ChickenProperties script attached!";
 
+            coopWalkable = NavMesh.GetAreaFromName("Coop");
+            coopNonWalkable = NavMesh.GetAreaFromName("Not Targetable");
+
+            Debug.Log(coopWalkable);
+            Debug.Log(coopNonWalkable);
+
             return null;
         }
 
-        //Called whenever the condition gets enabled.
-        protected override void OnEnable() {
-			
-		}
+        protected override bool OnCheck() {
 
-		//Called whenever the condition gets disabled.
-		protected override void OnDisable() {
-			
-		}
+            // Path sampling via https://discussions.unity.com/t/how-can-i-tell-which-area-is-a-navmeshagent-currently-standing-on/853407/7
+            chicken.navAgent.SamplePathPosition(coopWalkable + coopNonWalkable, 1, out var hit);
 
-		//Called once per frame while the condition is active.
-		//Return whether the condition is success or failure.
-		protected override bool OnCheck() {
-			return true;
+			return hit.hit;
 		}
 	}
 }

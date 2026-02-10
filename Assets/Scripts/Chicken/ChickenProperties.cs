@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class ChickenProperties : MonoBehaviour
 {
     public enum HealhProperties { Satiety, Energy, EggTimer }
+    public enum ClaimTypes { Trough, Nest }
 
     [Header("Movement")]
     public float baseMaxSpeed = 7f;
@@ -38,8 +39,8 @@ public class ChickenProperties : MonoBehaviour
     const float minPropertyValue = 50f;
     const float maxPropertyValue = 90f;
 
-    Blackboard agentBlackboard;
-    NavMeshAgent navAgent;
+    [HideInInspector] public Blackboard agentBlackboard;
+    [HideInInspector] public NavMeshAgent navAgent;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

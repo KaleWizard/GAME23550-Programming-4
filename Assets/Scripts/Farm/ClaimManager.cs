@@ -14,6 +14,11 @@ public class ClaimManager
         unclaimed.Add(t);
     }
 
+    public bool ClaimAvailable()
+    {
+        return unclaimed.Count > 0;
+    }
+
     public Transform ClaimRandom()
     {
         if (unclaimed.Count == 0) return null;

@@ -6,11 +6,10 @@ namespace NodeCanvas.Tasks.Conditions {
 
 	public class ClaimAvailableCT : ConditionTask
     {
-
         ChickenProperties chicken;
 
-        //Use for initialization. This is called only once in the lifetime of the task.
-        //Return null if init was successfull. Return an error string otherwise
+        BBParameter<ChickenProperties.ClaimTypes> type;
+
         protected override string OnInit()
         {
             chicken = agent.GetComponent<ChickenProperties>();
@@ -20,20 +19,18 @@ namespace NodeCanvas.Tasks.Conditions {
             return null;
         }
 
-        //Called whenever the condition gets enabled.
-        protected override void OnEnable() {
-			
-		}
+        protected override bool OnCheck() {
+			switch (type.value)
+            {
+                case ChickenProperties.ClaimTypes.Trough:
+                    return TroughClaimManager.Instance.ClaimAvailable();
 
-		//Called whenever the condition gets disabled.
-		protected override void OnDisable() {
-			
-		}
+                case ChickenProperties.ClaimTypes.Nest:
+                    return NestClaimManager.Instance.ClaimAvailable();
 
-		//Called once per frame while the condition is active.
-		//Return whether the condition is success or failure.
-		protected override bool OnCheck() {
-			return true;
+                default:
+                    return false;
+            }
 		}
 	}
 }
